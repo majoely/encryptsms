@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">EncryptSms</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="sms_number_hint">phone number</string>
+    <string name="sms_text_hint">message</string>
+    <string name="sms_button_label">Send</string>
+    <string name="title_activity_reviever">Reviever</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_reciever">Reciever</string>
+
+</resources>
