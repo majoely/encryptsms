@@ -9,5 +9,11 @@
     <string name="title_activity_reviever">Reviever</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_reciever">Reciever</string>
+    <string name="title_activity_read">Read</string>
+    <string name="burn_message">Burn</string>
+    <string name="demo_recieve_text">the sms should be here</string>
+    <string name="recieve_screen_button_text">Recieve</string>
+    <string name="send_screen_button_text">Send</string>
+    <string name="demo_recieve_from">the sender phone no. should be here</string>
 
 </resources>

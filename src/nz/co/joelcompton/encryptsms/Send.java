@@ -38,9 +38,10 @@ public class Send extends Activity {
 			Log.i(infClass, "phoneField == null or messagefield == null");
 		}
 		
-		
-		
-		
+	}
+	
+	public void recieveScreen(View v) {
+		Log.i(infClass, "This will send the app to the Recieve class");
 	}
 	
 	
