@@ -13,6 +13,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +23,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
+        
 /**
  *
  * @author pnv8813
@@ -29,6 +38,8 @@ public class Buddies {
 
     File buddiesList;
     HashMap buddiesHashMap = new HashMap<String, BigInteger>();
+    String message = "";
+    BigInteger publickey;
 
     public Buddies() {
         File buddiesList = new File("buddiesList.txt");
@@ -44,41 +55,39 @@ public class Buddies {
     //adds new public key to hashmap
     public void storeNewKey(String phoneNumber, BigInteger newpublickey) {
         buddiesHashMap.put(phoneNumber, newpublickey);
-        
-                //get keys and values from hashmap(separate with commas or colons)
+
+        //get keys and values from hashmap(separate with commas or colons)
         //get set of keys from hashmap
         Set keys = buddiesHashMap.keySet();
         Object key[] = keys.toArray();
-        String values = "";
+        String value = "";
         String str = "";
         String newline = System.getProperty("line.separator");
         BufferedWriter writer = null;
+        
         try {
             writer = new BufferedWriter(new FileWriter(buddiesList.getName()));
 
         } catch (IOException ex) {
             Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        //iterate through the set of keys to get the corresponding key value
-        for (Object obj : key) {
-            values = "" + buddiesHashMap.get(obj);
-            str = obj + "," + java.util.Arrays.toString(values.getBytes(Charset.forName("UTF-8"))) + newline;
 
+        value = "" + buddiesHashMap.get(phoneNumber);
+        str = phoneNumber + "," + new BASE64Encoder().encodeBuffer(value.getBytes(Charset.forName("UTF-8")))+ newline;
+
+        try {
+            //write each key/value pair to the file
+            writer.write(str);
+        } catch (IOException ex) {
+            Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
             try {
-                //write each key/value pair to the file
-                writer.write(str);
-            } catch (IOException ex) {
-                Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    // Close the writer regardless of what happens...
-                    writer.close();
-                } catch (Exception e) {
-                }
+                // Close the writer regardless of what happens...
+                writer.close();
+            } catch (Exception e) {
             }
         }
-        
+
     }
 
     //writes all the keys(phone numbers) and values(public keys)
@@ -95,8 +104,9 @@ public class Buddies {
             while ((line = br.readLine()) != null) {
                 // use comma as separator
                 String[] country = line.split(splitBy);
-                byte[] bytes = country[1].getBytes(Charset.forName("UTF-8"));
-                        //~not sure if byte array has
+                
+                byte[] bytes = new BASE64Decoder().decodeBuffer(country[1]);
+                //~not sure if byte array has
                 //the two's-complement binary representation of a BigInteger
                 key = new BigInteger(bytes);
                 //add these key/value pairs to the hashmap
@@ -119,50 +129,10 @@ public class Buddies {
 
     }
 
-    //saves the current hashmap keys(phone numbers) and values(public keys)
-    //to the textfile for when the application is used next
-    public void saveNewBuddies() {
-
-        //get keys and values from hashmap(separate with commas or colons)
-        //get set of keys from hashmap
-        Set keys = buddiesHashMap.keySet();
-        Object key[] = keys.toArray();
-        String values = "";
-        String str = "";
-        String newline = System.getProperty("line.separator");
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(buddiesList.getName()));
-
-        } catch (IOException ex) {
-            Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        //iterate through the set of keys to get the corresponding key value
-        for (Object obj : key) {
-            values = "" + buddiesHashMap.get(obj);
-            str = obj + "," + java.util.Arrays.toString(values.getBytes(Charset.forName("UTF-8"))) + newline;
-
-            try {
-                //write each key/value pair to the file
-                writer.write(str);
-            } catch (IOException ex) {
-                Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    // Close the writer regardless of what happens...
-                    writer.close();
-                } catch (Exception e) {
-                }
-            }
-        }
-
-    }
-
     //searches hashmap for key(phone number), if phone number is found
     //then they are already buddies(return true) and can send a message right away
-    //otherwise we will need to get their public key and we will send them 
-    //our key also
+    //otherwise we will need to get their public key from the server to encrypt 
+    //the message
     public boolean isBuddy(String number) {
         if (buddiesHashMap.containsKey(number)) {
             return true;
@@ -172,8 +142,21 @@ public class Buddies {
     }
 
     //encrypts message to send
-    public void encryptMessage(String number, String message) {
-
+    public String encryptMessage(String number, String message) {
+        
+        try {
+            BigInteger key =  (BigInteger)buddiesHashMap.get(number);
+            SecretKeySpec skey = new SecretKeySpec(key.toByteArray(), "");
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.ENCRYPT_MODE, skey);
+            byte[] encVal = c.doFinal(message.getBytes());
+            String encryptedValue = new BASE64Encoder().encode(encVal);
+            return encryptedValue;
+        } catch (Exception ex) {
+            Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+        
     }
 
     public static void main(String[] args) {
