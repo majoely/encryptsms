@@ -32,12 +32,19 @@ public class SenderReciever extends BroadcastReceiver {
 			    for (Object pdu: pdus)
 			    {
 					SmsMessage msg = SmsMessage.createFromPdu((byte[])pdu);
-					//Buddies b = new Buddies();
+					Buddies b = new Buddies(context);
 					String sender = msg.getOriginatingAddress();
 					String message = msg.getMessageBody();
 										    
-					if (true) { 
+					if (message.startsWith("ESMS")) { 
 						Log.i(infClass, "Is a buddy");
+						if (!b.isBuddy(sender)) {
+							try {
+								API.getPublicKey(sender);
+							} catch (Exception e) {
+								Log.i(infClass, "Can't get buddies public key");
+							}
+						}
 						abortBroadcast();
 						File f = new File(context.getFilesDir().getPath().toString() + fname);
 						if(!f.exists()) {
@@ -57,11 +64,11 @@ public class SenderReciever extends BroadcastReceiver {
 							e.printStackTrace();
 						}
 						
-					} else if (message.startsWith("NEWDHKEY:")) {
-						// Recieveing a new key because they didn't have us on their buddy list
-						// Reply with our public key
-						Log.i(infClass, "Is a new buddy");
-						abortBroadcast();
+//					} else if (message.startsWith("NEWDHKEY:")) {
+//						// Recieveing a new key because they didn't have us on their buddy list
+//						// Reply with our public key
+//						Log.i(infClass, "Is a new buddy");
+//						abortBroadcast();
 					} else {
 						// We should not do any processing on this case.
 						Log.i(infClass, "Not in buddies list or new");

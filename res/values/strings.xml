@@ -15,5 +15,8 @@
     <string name="recieve_screen_button_text">Recieve</string>
     <string name="send_screen_button_text">Send</string>
     <string name="demo_recieve_from">the sender phone no. should be here</string>
+    <string name="title_activity_phone_number">PhoneNumber</string>
+    <string name="phone_hint">Your number here</string>
+    <string name="button_register">Register</string>
 
 </resources>

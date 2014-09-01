@@ -30,11 +30,11 @@ public class Send extends Activity {
 			
 			if (message.length() > 0 && number.matches("02[1257][0-9]{6,7}")){
 				Toast.makeText(getApplicationContext(), "Message Good to go!", Toast.LENGTH_SHORT).show();
-				Buddies b = new Buddies();
+				Buddies b = new Buddies(getApplicationContext());
 				String crypto = b.encryptMessage(number, message);
 				SmsManager sms = SmsManager.getDefault();
-				sms.sendTextMessage(number, null, crypto, null, null);
-				recieveScreen(view);
+				sms.sendTextMessage(number, null, "ESMS" + crypto, null, null);
+				recieveScreen(view); 
 			} else {
 				Toast.makeText(getApplicationContext(), "Not good message!", Toast.LENGTH_SHORT).show();
 				Log.i(infClass, "message length == 0 or number != match " + number);

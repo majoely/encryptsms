@@ -29,6 +29,7 @@ public class Reciever extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		ScrollView sc = new ScrollView(this);
 		ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);

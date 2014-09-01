@@ -23,9 +23,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import android.content.Context;
+import android.util.Log;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -36,18 +40,20 @@ import sun.misc.BASE64Encoder;
  */
 public class Buddies {
 
+	private static final String infClass = "encryptsms";
     File buddiesList;
-    HashMap buddiesHashMap = new HashMap<String, BigInteger>();
+    HashMap<String, BigInteger> buddiesHashMap = new HashMap<>();
     String message = "";
     BigInteger publickey;
 
-    public Buddies() {
-        File buddiesList = new File("buddiesList.txt");
-        File file = new File("newfile.txt");
+    public Buddies(Context c) {
+        buddiesList = new File(c.getFilesDir().getPath().toString() + "buddiesList.txt");
+        //File file = new File("newfile.txt");
         try {
-            file.createNewFile();
+        	if (!buddiesList.exists())
+        		buddiesList.createNewFile();
         } catch (IOException ioe) {
-            System.out.println("Error while creating empty file: " + ioe);
+            Log.i(infClass, "making file buddies");
         }
         loadBuddies();
     }
@@ -62,7 +68,7 @@ public class Buddies {
         Object key[] = keys.toArray();
         String value = "";
         String str = "";
-        String newline = System.getProperty("line.separator");
+        String newline = "\n";
         BufferedWriter writer = null;
         
         try {
@@ -143,7 +149,9 @@ public class Buddies {
 
     //encrypts message to send
     public String encryptMessage(String number, String message) {
-        
+    	//testing only
+    	//return "ENCRYPT: " + message;
+     
         try {
             BigInteger key =  (BigInteger)buddiesHashMap.get(number);
             SecretKeySpec skey = new SecretKeySpec(key.toByteArray(), "");
@@ -159,8 +167,8 @@ public class Buddies {
         
     }
 
-    public static void main(String[] args) {
-        Buddies bud = new Buddies();
-
-    }
+//    public static void main(String[] args) {
+//        Buddies bud = new Buddies();
+//
+//    }
 }
