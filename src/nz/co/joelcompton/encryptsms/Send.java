@@ -2,7 +2,9 @@ package nz.co.joelcompton.encryptsms;
 
 import nz.co.joelcompton.encryptsms.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -10,7 +12,7 @@ import android.widget.Toast;
 
 public class Send extends Activity {
 
-	public static String infClass = "Send";
+	public static String infClass = "encryptsms";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,11 @@ public class Send extends Activity {
 			
 			if (message.length() > 0 && number.matches("02[1257][0-9]{6,7}")){
 				Toast.makeText(getApplicationContext(), "Message Good to go!", Toast.LENGTH_SHORT).show();
-				
+				Buddies b = new Buddies();
+				String crypto = b.encryptMessage(number, message);
+				SmsManager sms = SmsManager.getDefault();
+				sms.sendTextMessage(number, null, crypto, null, null);
+				recieveScreen(view);
 			} else {
 				Toast.makeText(getApplicationContext(), "Not good message!", Toast.LENGTH_SHORT).show();
 				Log.i(infClass, "message length == 0 or number != match " + number);
@@ -41,7 +47,9 @@ public class Send extends Activity {
 	}
 	
 	public void recieveScreen(View v) {
-		Log.i(infClass, "This will send the app to the Recieve class");
+		Intent inte = new Intent(this, Reciever.class);
+		startActivity(inte);
+		finish();
 	}
 	
 	

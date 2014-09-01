@@ -16,9 +16,10 @@ import android.widget.Toast;
 public class SenderReciever extends BroadcastReceiver {
 	
 	private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-	private static final String infClass = "SenderReciever";
-	private static final String fname = "messages.csv";
+	private static final String infClass = "encryptsms";
+	private static final String fname = "/messages.csv";
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(SMS_RECEIVED)) {
@@ -35,21 +36,23 @@ public class SenderReciever extends BroadcastReceiver {
 					String sender = msg.getOriginatingAddress();
 					String message = msg.getMessageBody();
 										    
-					if (false) { 
+					if (true) { 
 						Log.i(infClass, "Is a buddy");
 						abortBroadcast();
-						File f = new File(fname);
+						File f = new File(context.getFilesDir().getPath().toString() + fname);
 						if(!f.exists()) {
 							try {
 								f.createNewFile();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
+								Log.i(infClass, "Exception in senderreciever");
 							}
 						}
 						try {
 							FileWriter fw = new FileWriter(f);
 							fw.append(sender + "," + message + "\n");
+							fw.close();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
