@@ -1,5 +1,8 @@
 package nz.co.joelcompton.encryptsms;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +15,7 @@ public class SenderReciever extends BroadcastReceiver {
 	
 	private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 	private static final String infClass = "SenderReciever";
+	private static final String fname = "messages";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -25,14 +29,15 @@ public class SenderReciever extends BroadcastReceiver {
 			    for (Object pdu: pdus)
 			    {
 					SmsMessage msg = SmsMessage.createFromPdu((byte[])pdu);
-					
+					Buddies b = new Buddies();
 					String sender = msg.getOriginatingAddress();
 					String message = msg.getMessageBody();
-					    
-					if (false) { // check if sender is already on the buddies list
-						// Will decrypt and store in the sqlite db
+										    
+					if (b.isBuddy(sender)) { 
 						Log.i(infClass, "Is a buddy");
 						abortBroadcast();
+						File f = new File(fname);
+						
 					} else if (message.startsWith("NEWDHKEY:")) {
 						// Recieveing a new key because they didn't have us on their buddy list
 						// Reply with our public key
@@ -44,6 +49,8 @@ public class SenderReciever extends BroadcastReceiver {
 					}
 					Log.i(infClass, "Sender: " + sender);
 					Log.i(infClass, "Message: " + message);
+					
+					
 			    }
             }
 		}
@@ -57,4 +64,5 @@ public class SenderReciever extends BroadcastReceiver {
 		KeyHandler kh = new KeyHandler();
 		
 	}
+
 }

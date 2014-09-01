@@ -51,11 +51,19 @@ public class Reciever extends Activity {
 		buttonsLayout.addView(r1, p);
 		buttonsLayout.addView(r2, p);
 		
+		
 		for (int i = 0; i < 20; i++) {
-//			TextView tv = new TextView(this);
-//			tv.setText("This is some text");
-//			tv.setHeight(150);
-//			ll.addView(tv);
+			TextView tv = new TextView(this);
+			tv.setText("This is some text");
+			tv.setHeight(150);
+			tv.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					
+				}
+			});
+			ll.addView(tv);
 			Button but = new Button(this);
 			but.setText("This is a button");
 			but.setHeight(250);
