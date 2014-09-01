@@ -1,6 +1,8 @@
 package nz.co.joelcompton.encryptsms;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.BroadcastReceiver;
@@ -15,7 +17,7 @@ public class SenderReciever extends BroadcastReceiver {
 	
 	private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 	private static final String infClass = "SenderReciever";
-	private static final String fname = "messages";
+	private static final String fname = "messages.csv";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -29,14 +31,28 @@ public class SenderReciever extends BroadcastReceiver {
 			    for (Object pdu: pdus)
 			    {
 					SmsMessage msg = SmsMessage.createFromPdu((byte[])pdu);
-					Buddies b = new Buddies();
+					//Buddies b = new Buddies();
 					String sender = msg.getOriginatingAddress();
 					String message = msg.getMessageBody();
 										    
-					if (b.isBuddy(sender)) { 
+					if (false) { 
 						Log.i(infClass, "Is a buddy");
 						abortBroadcast();
 						File f = new File(fname);
+						if(!f.exists()) {
+							try {
+								f.createNewFile();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						try {
+							FileWriter fw = new FileWriter(f);
+							fw.append(sender + "," + message + "\n");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						
 					} else if (message.startsWith("NEWDHKEY:")) {
 						// Recieveing a new key because they didn't have us on their buddy list

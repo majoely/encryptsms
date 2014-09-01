@@ -1,5 +1,8 @@
 package nz.co.joelcompton.encryptsms;
 
+import android.content.Context;
+import android.widget.TextView;
+
 public class MessageRecieved {
 	
 	private String phoneNumber;
