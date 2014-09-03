@@ -38,13 +38,13 @@ public class SenderReciever extends BroadcastReceiver {
 										    
 					if (message.startsWith("ESMS")) { 
 						Log.i(infClass, "Is a buddy");
-						if (!b.isBuddy(sender)) {
-							try {
-								API.getPublicKey(sender);
-							} catch (Exception e) {
-								Log.i(infClass, "Can't get buddies public key");
-							}
-						}
+//						if (!b.isBuddy(sender)) {
+//							try {
+//								API.getPublicKey(sender);
+//							} catch (Exception e) {
+//								Log.i(infClass, "Can't get buddies public key");
+//							}
+//						}
 						abortBroadcast();
 						File f = new File(context.getFilesDir().getPath().toString() + fname);
 						if(!f.exists()) {
@@ -85,10 +85,6 @@ public class SenderReciever extends BroadcastReceiver {
 	public void sendNewMessage(String to, String message) {
 		
 	}
-	
-	public void sendPublicKey(String to) {
-		KeyHandler kh = new KeyHandler();
-		
-	}
+
 
 }

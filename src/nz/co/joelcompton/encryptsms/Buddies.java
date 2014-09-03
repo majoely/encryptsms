@@ -30,9 +30,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import android.content.Context;
 import android.util.Log;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
+//import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Encoder;
+import android.util.Base64;
         
 /**
  *
@@ -79,7 +79,8 @@ public class Buddies {
         }
 
         value = "" + buddiesHashMap.get(phoneNumber);
-        str = phoneNumber + "," + new BASE64Encoder().encodeBuffer(value.getBytes(Charset.forName("UTF-8")))+ newline;
+//        str = phoneNumber + "," + new BASE64Encoder().encodeBuffer(value.getBytes(Charset.forName("UTF-8")))+ newline;
+        str = phoneNumber + "," + Base64.encodeToString(value.getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
 
         try {
             //write each key/value pair to the file
@@ -111,7 +112,8 @@ public class Buddies {
                 // use comma as separator
                 String[] country = line.split(splitBy);
                 
-                byte[] bytes = new BASE64Decoder().decodeBuffer(country[1]);
+//                byte[] bytes = new BASE64Decoder().decodeBuffer(country[1]);
+                byte[] bytes = Base64.decode(country[1], Base64.DEFAULT);
                 //~not sure if byte array has
                 //the two's-complement binary representation of a BigInteger
                 key = new BigInteger(bytes);
@@ -158,7 +160,8 @@ public class Buddies {
             Cipher c = Cipher.getInstance("AES");
             c.init(Cipher.ENCRYPT_MODE, skey);
             byte[] encVal = c.doFinal(message.getBytes());
-            String encryptedValue = new BASE64Encoder().encode(encVal);
+            //String encryptedValue = new BASE64Encoder().encode(encVal);
+            String encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
             return encryptedValue;
         } catch (Exception ex) {
             Logger.getLogger(Buddies.class.getName()).log(Level.SEVERE, null, ex);
