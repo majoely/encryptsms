@@ -9,10 +9,14 @@ import java.net.URL;
 import java.security.Key;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import javax.net.ssl.HttpsURLConnection;
+
+import android.util.Base64;
+//import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -30,12 +34,11 @@ public class API {
 	public static String requestToken() throws IOException {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		URL url = new URL("https://python-dwin.rhcloud.com/requesttoken");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
+		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		//conn.setDoOutput(true);
 		conn.setRequestMethod("GET");
 		conn.setConnectTimeout(timeOutInMillis);
-		BufferedReader rd = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String output = rd.readLine();
 		rd.close();
 		return output;
@@ -116,7 +119,8 @@ public class API {
 			Cipher c = Cipher.getInstance(ALGO);
 			c.init(Cipher.ENCRYPT_MODE, key);
 			byte[] encVal = c.doFinal(Data.getBytes());
-			String encryptedValue = new BASE64Encoder().encode(encVal);
+//			String encryptedValue = new BASE64Encoder().encode(encVal);
+			String encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
 			return encryptedValue;
 		} catch (Exception ex) {
 			Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,8 +133,8 @@ public class API {
 			Key key = generateKey();
 			Cipher c = Cipher.getInstance(ALGO);
 			c.init(Cipher.DECRYPT_MODE, key);
-			byte[] decordedValue = new BASE64Decoder()
-					.decodeBuffer(encryptedData);
+//			byte[] decordedValue = new BASE64Decoder().decodeBuffer(encryptedData);
+			byte[] decordedValue = Base64.decode(encryptedData, Base64.DEFAULT);
 			byte[] decValue = c.doFinal(decordedValue);
 			String decryptedValue = new String(decValue);
 			return decryptedValue;
