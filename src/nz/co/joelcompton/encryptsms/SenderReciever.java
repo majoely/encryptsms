@@ -58,7 +58,7 @@ public class SenderReciever extends BroadcastReceiver {
 						}
 						try {
 							FileWriter fw = new FileWriter(f);
-							fw.append(sender + "," + message + "\n");
+							fw.append(sender + "," + message.substring(4) + "\n");
 							fw.close();
 						} catch (Exception e) {
 							e.printStackTrace();

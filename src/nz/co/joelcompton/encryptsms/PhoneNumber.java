@@ -53,8 +53,9 @@ public class PhoneNumber extends Activity {
 		@Override
 		protected Void doInBackground(String... params) {
 			try {
+				KeyHandler kh = new KeyHandler();
 				String token = API.requestToken();
-				String publicKey = KeyHandler.getPublicKeyEncoded();
+				String publicKey = kh.getPublicKeyEncoded();
 				String nounce = API.register(token, publicKey, params[0], 42);
 				
 				Log.i(infClass, "number " + params[0]);

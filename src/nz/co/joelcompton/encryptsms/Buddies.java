@@ -28,7 +28,9 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 //import sun.misc.BASE64Decoder;
 //import sun.misc.BASE64Encoder;
@@ -59,7 +61,8 @@ public class Buddies {
     }
 
     //adds new public key to hashmap
-    public void storeNewKey(String phoneNumber, BigInteger newpublickey) {
+    @SuppressLint("NewApi")
+	public void storeNewKey(String phoneNumber, BigInteger newpublickey) {
         buddiesHashMap.put(phoneNumber, newpublickey);
 
         //get keys and values from hashmap(separate with commas or colons)
@@ -174,4 +177,8 @@ public class Buddies {
 //        Buddies bud = new Buddies();
 //
 //    }
+    
+
+    
+    
 }

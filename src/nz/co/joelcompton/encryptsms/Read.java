@@ -22,11 +22,12 @@ public class Read extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_read);
 		
-		//KeyHandler kh = new KeyHandler();
+		KeyHandler kh = new KeyHandler();
+		
 		
 		Bundle b = getIntent().getExtras();
 		String number = b.getString("PHONE");
-		String message = b.getString("MESSAGE"); //kh.decryptMessage(b.getString("MESSAGE"));
+		String message = kh.decryptMessage(b.getString("MESSAGE"), );
 		
 		TextView num = (TextView) findViewById(R.id.sms_recieve_from);
 		num.setText(number);

@@ -46,13 +46,13 @@ public class KeyHandler {
     private static final BigInteger N = new BigInteger("FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551", 16);
     private static final int H = 1; // cofactor
 
-    private static ECPrivateKey privateKey;
-    private static ECPublicKey publicKey;
-    private static final File filePublicKey = new File("public.key");
-    private static final File filePrivateKey = new File("private.key");
+    private ECPrivateKey privateKey;
+    private ECPublicKey publicKey;
+    private final File filePublicKey = new File("public.key");
+    private final File filePrivateKey = new File("private.key");
 
-    private static EllipticCurve curve;
-    private static ECPoint G;
+    private EllipticCurve curve;
+    private ECPoint G;
 
     /**
      * @param args the command line arguments
@@ -77,21 +77,21 @@ public class KeyHandler {
         }
     }
     
-    public static String decryptMessage(String message, ECPublicKey buddiesPublicKey) throws InvalidKeyException, NoSuchAlgorithmException
+    public  String decryptMessage(String message, ECPublicKey buddiesPublicKey) throws InvalidKeyException, NoSuchAlgorithmException
     {
         System.arraycopy(calculateSecretKey(buddiesPublicKey), 0, keyValue, 0, 16);
         return decrypt(message);
     }
 
-    private static byte[] calculateSecretKey(ECPublicKey otherPublicKey) throws InvalidKeyException, NoSuchAlgorithmException {
+    private byte[] calculateSecretKey(ECPublicKey otherPublicKey) throws InvalidKeyException, NoSuchAlgorithmException {
         KeyAgreement ka = KeyAgreement.getInstance("ECDH");
         ka.init(privateKey);
         ka.doPhase(otherPublicKey, true);
         return ka.generateSecret();
     }
 
-    private static final String ALGO = "AES";
-    private static byte[] keyValue = new byte[16];
+    private final String ALGO = "AES";
+    private byte[] keyValue = new byte[16];
 
     /*private static String encrypt(String Data) {
         try {
@@ -107,7 +107,7 @@ public class KeyHandler {
         return null;
     }*/
 
-    private static String decrypt(String encryptedData) {
+    private String decrypt(String encryptedData) {
         try {
             Key key = generateKey();
             Cipher c = Cipher.getInstance(ALGO);
@@ -122,20 +122,20 @@ public class KeyHandler {
         return null;
     }
 
-    private static Key generateKey() throws Exception {
+    private Key generateKey() throws Exception {
         Key key = new SecretKeySpec(keyValue, ALGO);
         return key;
     }
 
-    public static ECPublicKey getPublicKey() {
+    public ECPublicKey getPublicKey() {
         return publicKey;
     }
 
-    public static String getPublicKeyEncoded() {
+    public String getPublicKeyEncoded() {
         return getHexString(publicKey.getEncoded());
     }
 
-    private static void generateKeys() {  
+    private void generateKeys() {  
         // create the elliptic curve
         ECField field = new ECFieldFp(P);
         curve = new EllipticCurve(field, A, B);
@@ -157,7 +157,7 @@ public class KeyHandler {
         }
     }
 
-    private static String getHexString(byte[] b) {
+    private String getHexString(byte[] b) {
         String result = "";
         for (int i = 0; i < b.length; i++) {
             result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
@@ -165,7 +165,7 @@ public class KeyHandler {
         return result;
     }
 
-    private static void SaveKeyPair() {
+    private void SaveKeyPair() {
         FileOutputStream fos = null;
         try {
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
@@ -192,7 +192,7 @@ public class KeyHandler {
         }
     }
 
-    private static void LoadKeyPair() {
+    private void LoadKeyPair() {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(filePublicKey);
