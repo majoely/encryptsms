@@ -15,6 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
 
 import android.util.Base64;
+import android.util.Log;
 //import sun.misc.BASE64Decoder;
 //import sun.misc.BASE64Encoder;
 
@@ -24,6 +25,8 @@ import android.util.Base64;
  */
 public class API {
 	private static final int timeOutInMillis = 10000;
+	private static final String infClass = "encryptsms";
+
 
 	/**
 	 * Requests a one time token from the public key authority server.
@@ -70,7 +73,7 @@ public class API {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		URL url = new URL("https://python-dwin.rhcloud.com/register");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
+		//conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
 		conn.setConnectTimeout(timeOutInMillis);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -97,12 +100,14 @@ public class API {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		URL url = new URL("https://python-dwin.rhcloud.com/getkey");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
+		//conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
 		conn.setConnectTimeout(timeOutInMillis);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		wr.write(data);
 		wr.flush();
+		int status = conn.getResponseCode();
+		Log.i(infClass, "responsecode " + status);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(
 				conn.getInputStream()));
 		String output = rd.readLine();

@@ -42,13 +42,6 @@ public class PhoneNumber extends Activity {
 		String n = tv.getText().toString();
 		if (n.length() > 0 && n.matches("02[1257][0-9]{6,7}")) {
 			new Register().execute(n);
-			File f = getFileStreamPath(fname);
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			Intent inte = new Intent(this, Reciever.class);
 			startActivity(inte);
 			finish();
@@ -61,10 +54,21 @@ public class PhoneNumber extends Activity {
 		protected Void doInBackground(String... params) {
 			try {
 				String token = API.requestToken();
-				//String publicKey = API.getPublicKey(number);
-				//API.register(token, publicKey, number, 42);
+				String publicKey = KeyHandler.getPublicKeyEncoded();
+				String nounce = API.register(token, publicKey, params[0], 42);
+				
 				Log.i(infClass, "number " + params[0]);
 				Log.i(infClass, "token  " + token); 
+				Log.i(infClass, "public " + publicKey);
+				Log.i(infClass, "nounce " + nounce);
+
+				File f = getFileStreamPath(fname);
+				try {
+					f.createNewFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
