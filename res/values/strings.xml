@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">EncryptSms</string>
+    <string name="app_name">Burn After Reading</string>
+    <string name="register_title">Register</string>
     <string name="hello_world">Hello world!</string>
     <string name="sms_number_hint">phone number</string>
     <string name="sms_text_hint">message</string>

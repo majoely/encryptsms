@@ -1,8 +1,13 @@
 package nz.co.joelcompton.encryptsms;
 
-import android.content.Context;
-import android.widget.TextView;
-
+/**
+ * 
+ * Class to hold the recieved messages as a temporary storages while
+ * the users hasn't read it yet.
+ * 
+ * @author Joel Compton
+ *
+ */
 public class MessageRecieved {
 	
 	private String phoneNumber;

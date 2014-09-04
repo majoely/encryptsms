@@ -8,6 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+/**
+ * 
+ * Activity to show the unread message.
+ * 
+ * @author Joel Compton
+ *
+ */
 public class Read extends Activity {
 
 	@Override

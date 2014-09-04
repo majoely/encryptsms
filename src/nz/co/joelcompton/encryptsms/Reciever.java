@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,13 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+/**
+ * 
+ * Class has the list of unread messages which can be read.
+ * 
+ * @author Joel Compton
+ *
+ */
 public class Reciever extends Activity implements OnClickListener {
 	
 	public static String infClass = "encryptsms";
@@ -33,6 +41,9 @@ public class Reciever extends Activity implements OnClickListener {
 		ScrollView sc = new ScrollView(this);
 		ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);
+		ll.setPadding(48, 30, 48, 0);
+//		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//				LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		
 		LinearLayout newLay = new LinearLayout(this);
 		newLay.setOrientation(LinearLayout.VERTICAL);
