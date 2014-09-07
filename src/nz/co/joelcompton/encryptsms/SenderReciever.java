@@ -3,6 +3,10 @@ package nz.co.joelcompton.encryptsms;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 import android.content.BroadcastReceiver;
@@ -38,6 +42,28 @@ public class SenderReciever extends BroadcastReceiver {
 										    
 					if (message.startsWith("ESMS")) { 
 						Log.i(infClass, "Is a buddy");
+						String number = sender;
+						
+						try {
+							String pkey = API.getPublicKey(number);
+							ECPublicKey ePub = PhoneNumber.kh.generateBuddiesPublicKeyFromString(pkey);
+							String decrypto = PhoneNumber.kh.decryptMessage(message.replaceFirst("ESMS", ""), ePub);
+							
+							Toast.makeText(context, "Recieved From: " + number + " Message: " + decrypto, Toast.LENGTH_LONG).show();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (InvalidKeySpecException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NoSuchAlgorithmException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InvalidKeyException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 //						if (!b.isBuddy(sender)) {
 //							try {
 //								API.getPublicKey(sender);

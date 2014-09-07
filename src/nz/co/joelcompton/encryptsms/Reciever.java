@@ -132,7 +132,7 @@ public class Reciever extends Activity implements OnClickListener {
 		try {
 			File f = new File(getApplicationContext().getFilesDir().getPath().toString() + fname);
 			Scanner in = new Scanner(f);
-			KeyHandler kh = new KeyHandler();
+			KeyHandler kh = PhoneNumber.kh;
 			this.messages = new ArrayList<>();
 			while (in.hasNext()) {
 				String[] temp = in.nextLine().split(",");

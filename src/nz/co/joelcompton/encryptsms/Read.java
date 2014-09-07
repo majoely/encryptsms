@@ -1,5 +1,7 @@
 package nz.co.joelcompton.encryptsms;
 
+import java.security.interfaces.ECPublicKey;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,12 +24,13 @@ public class Read extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_read);
 		
-		KeyHandler kh = new KeyHandler();
+		KeyHandler kh = new KeyHandler(getFileStreamPath("private.key"), getFileStreamPath("public.key"));
 		
 		
 		Bundle b = getIntent().getExtras();
 		String number = b.getString("PHONE");
-		String message = kh.decryptMessage(b.getString("MESSAGE"), );
+		//String message = kh.decryptMessage(b.getString("MESSAGE"), );
+		String message = "PLACEHOLDER";
 		
 		TextView num = (TextView) findViewById(R.id.sms_recieve_from);
 		num.setText(number);

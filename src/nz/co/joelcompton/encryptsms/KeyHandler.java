@@ -29,7 +29,9 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.SecretKeySpec;
 
+import android.content.Context;
 import android.util.Base64;
+import android.widget.Toast;
 
 /**
  *
@@ -48,21 +50,15 @@ public class KeyHandler {
 
     private ECPrivateKey privateKey;
     private ECPublicKey publicKey;
-    private final File filePublicKey = new File("public.key");
-    private final File filePrivateKey = new File("private.key");
+    private File filePublicKey = new File("public.key");
+    private File filePrivateKey = new File("private.key");
 
     private EllipticCurve curve;
     private ECPoint G;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        KeyHandler kh = new KeyHandler();
-        //You can delete this method!
-    }
-
-    public KeyHandler() {
+    public KeyHandler(File filePrivateKey, File filePublicKey) {
+    	this.filePrivateKey = filePrivateKey;
+    	this.filePublicKey = filePublicKey;
         if (filePublicKey.exists() && filePrivateKey.exists()) {
             LoadKeyPair();
         } else {
@@ -77,7 +73,13 @@ public class KeyHandler {
         }
     }
     
-    public  String decryptMessage(String message, ECPublicKey buddiesPublicKey) throws InvalidKeyException, NoSuchAlgorithmException
+    public String encryptMessage(String message, ECPublicKey buddiesPublicKey) throws InvalidKeyException, NoSuchAlgorithmException
+    {
+    	System.arraycopy(calculateSecretKey(buddiesPublicKey), 0, keyValue, 0, 16);
+    	return encrypt(message);
+    }
+    
+    public String decryptMessage(String message, ECPublicKey buddiesPublicKey) throws InvalidKeyException, NoSuchAlgorithmException
     {
         System.arraycopy(calculateSecretKey(buddiesPublicKey), 0, keyValue, 0, 16);
         return decrypt(message);
@@ -93,21 +95,21 @@ public class KeyHandler {
     private final String ALGO = "AES";
     private byte[] keyValue = new byte[16];
 
-    /*private static String encrypt(String Data) {
+    public String encrypt(String Data) {
         try {
             Key key = generateKey();
             Cipher c = Cipher.getInstance(ALGO);
             c.init(Cipher.ENCRYPT_MODE, key);
             byte[] encVal = c.doFinal(Data.getBytes());
-            String encryptedValue = new BASE64Encoder().encode(encVal);
+            String encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
             return encryptedValue;
         } catch (Exception ex) {
             Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }*/
+    }
 
-    private String decrypt(String encryptedData) {
+    public String decrypt(String encryptedData) {
         try {
             Key key = generateKey();
             Cipher c = Cipher.getInstance(ALGO);
@@ -135,7 +137,7 @@ public class KeyHandler {
         return getHexString(publicKey.getEncoded());
     }
 
-    private void generateKeys() {  
+    private void generateKeys() {
         // create the elliptic curve
         ECField field = new ECFieldFp(P);
         curve = new EllipticCurve(field, A, B);
@@ -164,6 +166,16 @@ public class KeyHandler {
         }
         return result;
     }
+    
+    private static byte[] hexStringToByteArray(String s)
+    {
+    	int len = s.length();
+    	byte[] data = new byte[len / 2];
+    	for(int i = 0; i < len; i+=2) {
+    		data[i/2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+    	}
+    	return data;
+    }
 
     private void SaveKeyPair() {
         FileOutputStream fos = null;
@@ -190,6 +202,14 @@ public class KeyHandler {
                 Logger.getLogger(KeyHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public ECPublicKey generateBuddiesPublicKeyFromString(String publicKeyString) throws InvalidKeySpecException, NoSuchAlgorithmException
+    {
+    	byte[] encodedPublicKey = hexStringToByteArray(publicKeyString);
+    	KeyFactory keyFactory = KeyFactory.getInstance("EC");
+    	X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
+    	return (ECPublicKey) keyFactory.generatePublic(publicKeySpec);    	
     }
 
     private void LoadKeyPair() {

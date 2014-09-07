@@ -44,7 +44,7 @@ public class Buddies {
 
 	private static final String infClass = "encryptsms";
     File buddiesList;
-    HashMap<String, BigInteger> buddiesHashMap = new HashMap<>();
+    HashMap<String, String> buddiesHashMap = new HashMap<>();
     String message = "";
     BigInteger publickey;
 
@@ -62,7 +62,7 @@ public class Buddies {
 
     //adds new public key to hashmap
     @SuppressLint("NewApi")
-	public void storeNewKey(String phoneNumber, BigInteger newpublickey) {
+	public void storeNewKey(String phoneNumber, String newpublickey) {
         buddiesHashMap.put(phoneNumber, newpublickey);
 
         //get keys and values from hashmap(separate with commas or colons)
@@ -116,12 +116,12 @@ public class Buddies {
                 String[] country = line.split(splitBy);
                 
 //                byte[] bytes = new BASE64Decoder().decodeBuffer(country[1]);
-                byte[] bytes = Base64.decode(country[1], Base64.DEFAULT);
+                //byte[] bytes = Base64.decode(country[1], Base64.DEFAULT);
                 //~not sure if byte array has
                 //the two's-complement binary representation of a BigInteger
-                key = new BigInteger(bytes);
+                //key = new BigInteger(bytes);
                 //add these key/value pairs to the hashmap
-                buddiesHashMap.put(country[0], key);
+                buddiesHashMap.put(country[0], country[1]);
             }
 
         } catch (FileNotFoundException e) {
@@ -151,9 +151,14 @@ public class Buddies {
             return false;
         }
     }
+    
+    public String getPublicKey(String number)
+    {
+    	return buddiesHashMap.get(number);
+    }
 
     //encrypts message to send
-    public String encryptMessage(String number, String message) {
+    /*public String encryptMessage(String number, String message) {
     	//testing only
     	//return "ENCRYPT: " + message;
      
@@ -171,7 +176,7 @@ public class Buddies {
         }
         return null;
         
-    }
+    }*/
 
 //    public static void main(String[] args) {
 //        Buddies bud = new Buddies();

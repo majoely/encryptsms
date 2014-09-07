@@ -23,6 +23,10 @@ public class PhoneNumber extends Activity {
 	
 	public static final String fname = "number.txt";
 	private static final String infClass = "encryptsms";
+	public static KeyHandler kh;
+	
+	private static File filePublicKey;
+    private static File filePrivateKey;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,8 @@ public class PhoneNumber extends Activity {
 			startActivity(inte);
 			finish();
 		}
+		filePublicKey = getFileStreamPath("public.key");
+		filePrivateKey = getFileStreamPath("private.key");
 		setContentView(R.layout.activity_phone_number);
 		
 	}
@@ -53,7 +59,7 @@ public class PhoneNumber extends Activity {
 		@Override
 		protected Void doInBackground(String... params) {
 			try {
-				KeyHandler kh = new KeyHandler();
+				kh = new KeyHandler(filePrivateKey, filePublicKey);
 				String token = API.requestToken();
 				String publicKey = kh.getPublicKeyEncoded();
 				String nounce = API.register(token, publicKey, params[0], 42);
