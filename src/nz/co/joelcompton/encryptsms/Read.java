@@ -41,31 +41,32 @@ public class Read extends Activity {
 		String formattedNumber = number.replaceFirst("\\+64", "0");
 		String pkey = "";
 		String message = "There was an issue decrypting the message";
-		try {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+		try {	
 			pkey = API.getPublicKey(formattedNumber);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (Exception e) {
 			Log.i(infClass, "Error getting public key");
+			message = "NOPUB";
 			e.printStackTrace();
 		}
 		if(!pkey.equals(""))
 		{
+			ECPublicKey ePub = null;
 			try {
-				ECPublicKey ePub = PhoneNumber.kh.generateBuddiesPublicKeyFromString(pkey);
+				ePub = kh.generateBuddiesPublicKeyFromString(pkey);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				message += " NOEPUB";
+			}
+			
+			try {
 				message = kh.decryptMessage(b.getString("MESSAGE").replaceFirst("ESMS", ""), ePub);
-			} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			}  catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (InvalidKeyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				Log.i(infClass, "trying to decrypt");
-				e.printStackTrace();
+				message += " NODECRYPT";
 			}
 		}
 		
@@ -73,7 +74,7 @@ public class Read extends Activity {
 		//String message = b.getString("MESSAGE").replaceFirst("ESMS", "");
 		
 		TextView num = (TextView) findViewById(R.id.sms_recieve_from);
-		num.setText(number);
+		num.setText(formattedNumber);
 		TextView mes =(TextView) findViewById(R.id.sms_recieve_text);
 		mes.setText(message);
 	}
