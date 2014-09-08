@@ -9,6 +9,8 @@ import java.security.spec.InvalidKeySpecException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,8 @@ import android.widget.TextView;
  *
  */
 public class Read extends Activity {
+	private static final String infClass = "encryptsms";
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +38,18 @@ public class Read extends Activity {
 		Bundle b = getIntent().getExtras();
 		String number = b.getString("PHONE");
 		//String message = kh.decryptMessage(b.getString("MESSAGE"), );
-		/*String formattedNumber = number.replaceFirst("+64", "0");
+		String formattedNumber = number.replaceFirst("\\+64", "0");
 		String pkey = "";
 		String message = "There was an issue decrypting the message";
 		try {
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
 			pkey = API.getPublicKey(formattedNumber);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			Log.i(infClass, "Error getting public key");
 			e.printStackTrace();
 		}
 		if(!pkey.equals(""))
@@ -54,11 +63,14 @@ public class Read extends Activity {
 			} catch (InvalidKeyException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NullPointerException e) {
+				Log.i(infClass, "trying to decrypt");
+				e.printStackTrace();
 			}
-		}*/
+		}
 		
 		//String message = "PLACEHOLDER";
-		String message = b.getString("MESSAGE").replaceFirst("ESMS", "");
+		//String message = b.getString("MESSAGE").replaceFirst("ESMS", "");
 		
 		TextView num = (TextView) findViewById(R.id.sms_recieve_from);
 		num.setText(number);
