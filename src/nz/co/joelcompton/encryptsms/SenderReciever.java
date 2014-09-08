@@ -32,6 +32,7 @@ public class SenderReciever extends BroadcastReceiver {
 			Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 // get sms objects
+            	Toast.makeText(context, "Bundle is Not Null", Toast.LENGTH_SHORT).show();
 				Object[] pdus = (Object[]) bundle.get("pdus");
 			    for (Object pdu: pdus)
 			    {
@@ -39,30 +40,12 @@ public class SenderReciever extends BroadcastReceiver {
 					Buddies b = new Buddies(context);
 					String sender = msg.getOriginatingAddress();
 					String message = msg.getMessageBody();
+					Toast.makeText(context, sender + " " + message, Toast.LENGTH_SHORT).show();
 										    
 					if (message.startsWith("ESMS")) { 
+						Toast.makeText(context, "Txt Starts with ESMS", Toast.LENGTH_SHORT).show();
 						Log.i(infClass, "Is a buddy");
 						String number = sender;
-						
-						try {
-							String pkey = API.getPublicKey(number);
-							ECPublicKey ePub = PhoneNumber.kh.generateBuddiesPublicKeyFromString(pkey);
-							String decrypto = PhoneNumber.kh.decryptMessage(message.replaceFirst("ESMS", ""), ePub);
-							
-							Toast.makeText(context, "Recieved From: " + number + " Message: " + decrypto, Toast.LENGTH_LONG).show();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (InvalidKeySpecException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (NoSuchAlgorithmException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InvalidKeyException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
 //						if (!b.isBuddy(sender)) {
 //							try {
